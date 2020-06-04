@@ -1,0 +1,48 @@
+# Test system presented in Van Cutsem (section 6.3)
+
+           # name    bus FP FQ P  Q  MVA ;
+INJEC THEVEQ MACHINF ONE 1. 1. 0. 0. 1000000. ;
+
+#   bus nominal_kV ;
+BUS ONE 230. ;
+BUS TWO 13.8 ;
+BUS 4 230. ;
+
+   # name      bus1 bus2 R  X         WC/2 SNOM   breaker ;
+# LINE ONE-4  ONE  4 0. 1115.6936 0.   10000. 1. ;
+# LINE ONE-4b ONE  4 0. 1115.6936 0.   10000. 1. ;
+LINE ONE-4  ONE  4 0.  1451.9636 0.   10000. 1. ;
+LINE ONE-4b ONE  4 0.  1451.9636 0.   10000. 1. ;
+
+
+# TRFO name bus1 bus2 ctl_bus R X B N snom n_first n_last n_pos tol_v v_des br ;
+TRFO STEP-UP TWO 4 ' ' 0. 8.8 0. 103 7.333 0. 0. 0. 0. 0. 1. ;
+
+FNOM 60. ;
+
+#                # FP FQ P  Q  SNOM Pnom H   D  IBRATIO
+# SYNC_MACH G2 TWO 1. 1. 0. 0. 6.0   4.5   3.5 4. 2.
+#   # XT/RL Xl  Xd  X'd X''d Xq  X'q X''q m  n  Ra T'do T''do T'qo T''qo
+#     XT    0.1 2.1 0.4 *    2.1 *   *    0. 1. 0. 8.   *     *    *
+#                # IFLIM  d   f  S  K1  K2  L1  L2  G   TA TB TE  L3 L4
+#     EXC GENERIC1 2.665   -0.1 0. 1. 1. -1. -20. 0.1 50. 1. 1. 0.1 0. 5.
+#                # SPEEDIN KPSS Tw  T1   T2    T3   T4     DVMIN DVMAX
+#                  1.      0.   15. 0.22 0.012 0.22 0.012 -0.1   0.1
+#     TOR CONSTANT ;
+
+               # FP FQ P  Q  SNOM Pnom H   D  IBRATIO
+SYNC_MACH G2 TWO 1. 1. 0. 0. 6.0   4.5   3.5 4. 2.
+  # XT/RL Xl  Xd  X'd X''d Xq  X'q X''q m  n  Ra T'do T''do T'qo T''qo
+    XT    0.1 2.1 0.4 *    2.1 *   *    0. 1. 0. 8.   *     *    *
+               # IFLIM  d   f  S  K1  K2  L1  L2  G   TA TB TE  L3 L4
+    EXC GENERIC1 2.8   -0.1 0. 1. 1. -1. -20. 0.1 50. 1. 1. 0.1 0. 5.
+               # SPEEDIN KPSS Tw  T1   T2    T3   T4     DVMIN DVMAX
+                 1.      0.   15. 0.22 0.012 0.22 0.012 -0.1   0.1
+    TOR CONSTANT ;
+
+# DCTL LTC2 name trfo_name ctl_bus dir1 nmin nmax npos tol vset del1 del2
+DCTL LTC2 T4-Aa T4-Aa 4a2 1. 90.9 125. 31. 0.01 1.0 20. 10. ;
+# DCTL LTC2 T4-Aa T4-Aa 4a2 -1. 80 110. 31. 0.01 1.0 20. 10. ;
+
+# Voltage limits
+DCTL SIM_MINMAXVOLT Warning 0.6 1.2 0.1 0.;

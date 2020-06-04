@@ -37,9 +37,9 @@ def coordinator(tk, measurements):
     if 11 < tk:
         signal_P = 4
         signal_Q = 4
-    if 16 < tk:
-        signal_P = 5
-        signal_Q = 5
+    # if 16 < tk:
+    #     signal_P = 5
+    #     signal_Q = 5
 
     # Wrap signals in a list
     signal = [signal_P, signal_Q]

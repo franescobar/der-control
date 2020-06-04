@@ -1,0 +1,25 @@
+# # ... FP FQ P Q DP A1 alpha1 A2 alpha2 alpha3 DQ B1 beta1 B2 beta2 beta3;
+# # LOAD L3 4a2 0. 0. -20. -10. 0. 1. 1.5 0. 0. 0. 0. 1. 2.5 0. 0. 0. ;
+# LOAD L3 4a2 0. 0. -12. -4.7814 0. 1. 1.5 0. 0. 0. 0. 1. 2.5 0. 0. 0. ;
+#
+# # ... Q_nom breaker;
+# SHUNT C3 4a2 4. 1. ;
+#
+# # Induction machines
+# # INJEC INDMACH1 ind_name bus_name FP FQ P Q
+# # SNOM RS LLS LSR RR LLR H A B LF
+# INJEC INDMACH1 M3 4a2 0. 0. -8.00 -5.2186
+# 11.6363 0. 0.1000  3.20 0.018 0.18 0.5 0. 0. 1. ;
+
+# ... FP FQ P Q DP A1 alpha1 A2 alpha2 alpha3 DQ B1 beta1 B2 beta2 beta3;
+# LOAD L3 4a2 0. 0. -20. -10. 0. 1. 1.5 0. 0. 0. 0. 1. 2.5 0. 0. 0. ;
+LOAD L3 4a2 0. 0. -10. -3.4765 0. 1. 1.5 0. 0. 0. 0. 1. 2.5 0. 0. 0. ;
+
+# ... Q_nom breaker;
+SHUNT C3 4a2 4. 1. ;
+
+# Induction machines
+# INJEC INDMACH1 ind_name bus_name FP FQ P Q
+# SNOM RS LLS LSR RR LLR H A B LF
+INJEC INDMACH1 M3 4a2 0. 0. -10. -6.5235
+14.545375 0. 0.1000  3.20 0.018 0.18 0.5 0. 0. 1. ;
