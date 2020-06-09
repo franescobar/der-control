@@ -107,6 +107,15 @@ ram.endSim()
 # Extract variables
 ext = pyramses.extractor(case.getTrj())
 
+# Plot power and reactive power supplied at the feeder
+plt.figure()
+P = ext.getBranch('T4a3-Aa').PF
+Q = ext.getBranch('T4a3-Aa').QF
+plt.plot(P[0], P[1])
+plt.plot(Q[0], Q[1])
+plt.title('P and Q supplied by MV-LV transformer (kW and kvar)')
+plt.show()
+
 # Plot reactive power of batteries and PVs
 plt.figure()
 for DERD in DERD_names:
