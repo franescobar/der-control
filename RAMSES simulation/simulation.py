@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 from dercon import *
 from pyramses import simulator
 simulator.new__libdir__ = \
-                    'C:\\Users\\Francisco\\Desktop\\URAMSES_Jorge\\Release_intel_w64'
+                    'D:\Francisco Escobar\RAMSES executable'
 
 # Create case
 case = pyramses.cfg()
@@ -64,7 +64,7 @@ AC_names = [inj for inj in INJ_names if 'AC2' in inj]
 WH_names = [inj for inj in INJ_names if 'WH' in inj]
 
 # Define simulation parameters
-thorizon = 15
+thorizon = 100
 tsample = 1
 
 # Initialize variables

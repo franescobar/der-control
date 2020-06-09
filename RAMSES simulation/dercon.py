@@ -27,21 +27,21 @@ def coordinator(tk, measurements):
         the TN. '''
 
     # Determine signal value based on logic
-    if 1 < tk:
+    if 20 < tk:
         signal_P = 2
         signal_Q = 2
     else:
         signal_P = 1
         signal_Q = 1
-    if 6 < tk:
+    if 40 < tk:
         signal_P = 3
         signal_Q = 3
-    if 11 < tk:
+    if 60 < tk:
         signal_P = 4
         signal_Q = 4
-    # if 16 < tk:
-    #     signal_P = 5
-    #     signal_Q = 5
+    if 80 < tk:
+        signal_P = 5
+        signal_Q = 5
 
     # Wrap signals in a list
     signal = [signal_P, signal_Q]
