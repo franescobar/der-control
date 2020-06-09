@@ -11,6 +11,8 @@
 
 '''
 
+import math
+
 def get_measurements(ram):
     ''' Receives simulation instance and other parameters and returns
         measurements that will then be used by coordinator. '''
@@ -178,9 +180,10 @@ def translator_WH(tk, signal, signal_prev, injectors, sat, ram):
 
 def translator_AC(tk, signal, signal_prev, injectors, sat, ram):
     ''' Translates signal sent by coordinator into parameter ffrac
-    and signal used in the duty-cycle control. The function sends the
-    parameter changes directly to the injectors, and it only returns
-    a boolean that tells if no parameters can be changed (sat). '''
+        and signal used in the duty-cycle control. The function sends
+        the parameter changes directly to the injectors, and it only
+        returns a boolean that tells if no parameters can be changed
+        (sat). '''
 
     # Unpack signal (only P matters)
     signal_P = signal[0]
@@ -195,21 +198,46 @@ def translator_AC(tk, signal, signal_prev, injectors, sat, ram):
     # If signal changed and asks for ancillary services
     if signal_P != signal_P_prev:
 
+        # Obtain active power at current time
+        current_P = []
+        for inj in injectors:
+            P = ram.getObs('INJ', inj , 'Pdisp')
+            current_P.append(P[0])
+
+        # Obtain nominal apparent power
+        Snom = []
+        for inj in injectors:
+            Snom.append(ram.getPrm('INJ', inj , 'Snom'))
+
+        # Obtain available and initial reactive power
+        available_Q = []
+        initial_Q = []
+        for (i, P) in enumerate(current_P):
+            Q = math.sqrt(Snom[i]**2 - P**2)
+            available_Q.append(Q)
+            initial_Q.append(math.tan(math.acos(1))*1*Snom[i]/1.5)
+
         # Determine signal sent to AC (signal_AC). If signal_AC is 1 or 3, ffrac
         # is not required
         if 1 - tol < signal_P < 1 + tol:
-                    signal_AC = 1
+            signal_AC = 1
+            available_Q = initial_Q
+            Qfactor = 1
         if 2 - tol < signal_P < 2 + tol:
-                    signal_AC = 2
-                    ffrac = 0.25
+            signal_AC = 2
+            ffrac = 0
+            Qfactor = 0.25
         if 3 - tol < signal_P < 3 + tol:
-                    signal_AC = 2
-                    ffrac = 0.50
+            signal_AC = 2
+            ffrac = 0
+            Qfactor = 0.75
         if 4 - tol < signal_P < 4 + tol:
-                    signal_AC = 2
-                    ffrac = 0.75
+            signal_AC = 2
+            ffrac = 0.5
+            Qfactor = 1
         if 5 - tol < signal_P < 5 + tol:
-                    signal_AC = 3
+            signal_AC = 3
+            Qfactor = 1
 
         # Make sure to de-saturate requests to ACs if required
         if abs(signal_P) < signal_Dmin:
@@ -218,19 +246,16 @@ def translator_AC(tk, signal, signal_prev, injectors, sat, ram):
         # If requests to ACs are not saturated
         if not sat:
             # For each injector
-            for inj in injectors:
-                # First change signal to 1
+            for (i, inj) in enumerate(injectors):
+                # Define string for sending changes
                 prefix = 'CHGPRM INJ ' + inj + ' '
                 suffix = ' SETP 0.'
-                ram.addDisturb(tk+0.005,
-                               prefix + 'signal 1.0' + suffix)
-            # For each injector
-            for inj in injectors:
-                # Send changes
-                prefix = 'CHGPRM INJ ' + inj + ' '
-                suffix = ' SETP 0.'
+                # Send change in signal
                 ram.addDisturb(tk+0.01,
                                prefix + 'signal ' + str(signal_AC) + suffix)
+                # Send change in reactive power
+                Q = available_Q[i]*Qfactor
+                ram.addDisturb(tk+0.01, prefix + 'Qset ' + str(Q) + suffix)
                 # If signal is two
                 if  2 - tol < signal_AC < 2 + tol:
                     # Send also change in ffrac
